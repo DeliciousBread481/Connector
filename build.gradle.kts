@@ -34,7 +34,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2" apply false
     id("org.spongepowered.mixin") version "0.7.+"
     id("me.modmuss50.mod-publish-plugin") version "0.3.+"
-    id("net.neoforged.gradleutils") version "2.0.+"
+    //id("net.neoforged.gradleutils") version "2.0.+"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
 }
 
@@ -65,8 +65,11 @@ val PUBLISH_RELEASE_TYPE: Provider<String> = providers.environmentVariable("PUBL
 group = "org.sinytra"
 version = "$versionConnector+$versionMc"
 // Append git commit hash for dev versions
-if (!PUBLISH_RELEASE_TYPE.isPresent) {
-    version = "$version+dev-${gradleutils.gitInfo["hash"]}"
+if (!PUBLISH_RELEASE_TYPE.isPresent) {  
+    val gitHash = providers.exec {  
+        commandLine("git", "rev-parse", "--short=7", "HEAD")  
+    }.standardOutput.asText.get().trim()  
+    version = "$version+dev-$gitHash"  
 }
 println("Project version: $version")
 
