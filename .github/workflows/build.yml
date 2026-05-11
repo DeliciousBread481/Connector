@@ -30,5 +30,8 @@ jobs:
         uses: actions/upload-artifact@v4  
         with:  
           name: connector-mod  
-          path: build/libs/*-dev-*.jar  
+          path: |  
+            build/libs/*.jar  
+            !build/libs/*-sources.jar  
+            !build/libs/*-dev-*.jar  
           retention-days: 30
