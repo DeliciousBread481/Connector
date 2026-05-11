@@ -91,6 +91,8 @@ public final class OptimizedRenamingTransformer extends RenamingTransformer {
                         indy.bsmArgs[i] = postProcessRemapper.mapValue(indy.bsmArgs[i]);
                         indy.bsm = (Handle) postProcessRemapper.mapValue(indy.bsm);
                     }
+                    // Remap lambda method descriptor to fix functional interface method signature mismatches
+                    indy.desc = this.remapper.mapMethodDesc(indy.desc);
                 }
             }
         }
@@ -291,7 +293,7 @@ public final class OptimizedRenamingTransformer extends RenamingTransformer {
             return this.classProvider.getClass(owner)
                 .map(cls -> {
                     // Handle methods belonging to interfaces added through @Implements
-                    if (cls instanceof MixinClassInfo && !name.startsWith("lambda$")) {
+                    if (cls instanceof MixinClassInfo) {
                         int interfacePrefix = name.indexOf("$");
                         if (interfacePrefix > -1 && name.lastIndexOf("$") == interfacePrefix) {
                             String actualName = name.substring(interfacePrefix + 1);
